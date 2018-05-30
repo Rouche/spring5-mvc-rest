@@ -88,6 +88,7 @@
 				<configuration>
 					<source>1.8</source>
 					<target>1.8</target>
+					<!-- @Important mapstruct options -->
 					<annotationProcessorPaths>
 						<path>
 							<groupId>org.projectlombok</groupId>
