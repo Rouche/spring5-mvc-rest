@@ -1,6 +1,6 @@
-package guru.springfamework.repositories;
+package com.resolutech.repositories;
 
-import guru.springfamework.domain.Category;
+import com.resolutech.domain.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
