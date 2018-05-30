@@ -1,4 +1,4 @@
-package com.resolutech.spring5mvcrest;
+package com.resolutech;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
