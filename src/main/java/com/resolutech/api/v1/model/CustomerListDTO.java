@@ -5,6 +5,6 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class CategoryListDTO {
-    private final List<CategoryDTO> categories;
+public class CustomerListDTO {
+    private final List<CustomerDTO> customers;
 }
