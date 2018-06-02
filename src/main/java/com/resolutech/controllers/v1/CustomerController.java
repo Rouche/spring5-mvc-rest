@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.List;
 
 @Controller
-@RequestMapping("api/v1/customers/")
+@RequestMapping(CustomerController.CUSTOMER_ROOT_URL)
 public class CustomerController {
+
+    static final String CUSTOMER_ROOT_URL = "api/v1/customers/";
 
     private final CustomerService customerService;
 
@@ -30,13 +32,13 @@ public class CustomerController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<CustomerDTO> getByName(@PathVariable("id") String id) {
+    public ResponseEntity<CustomerDTO> getById(@PathVariable("id") String id) {
         CustomerDTO dto = customerService.getById(id);
         setCustomerUrl(dto);
         return new ResponseEntity(dto, HttpStatus.OK);
     }
 
     private void setCustomerUrl(CustomerDTO dto) {
-        dto.setCustomerUrl("/api/v1/customers/" + dto.getId());
+        dto.setCustomerUrl(CUSTOMER_ROOT_URL + dto.getId());
     }
 }
