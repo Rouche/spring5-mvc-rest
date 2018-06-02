@@ -6,9 +6,7 @@ import com.resolutech.services.CustomerService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -16,7 +14,7 @@ import java.util.List;
 @RequestMapping(CustomerController.CUSTOMER_ROOT_URL)
 public class CustomerController {
 
-    static final String CUSTOMER_ROOT_URL = "api/v1/customers/";
+    static final String CUSTOMER_ROOT_URL = "/api/v1/customers";
 
     private final CustomerService customerService;
 
@@ -38,7 +36,14 @@ public class CustomerController {
         return new ResponseEntity(dto, HttpStatus.OK);
     }
 
+    @PostMapping
+    public ResponseEntity<CustomerDTO> createCustomer(@RequestBody CustomerDTO customerDTO) {
+        CustomerDTO dto = customerService.createCustomer(customerDTO);
+        setCustomerUrl(dto);
+        return new ResponseEntity(dto, HttpStatus.CREATED);
+    }
+
     private void setCustomerUrl(CustomerDTO dto) {
-        dto.setCustomerUrl(CUSTOMER_ROOT_URL + dto.getId());
+        dto.setCustomerUrl(CUSTOMER_ROOT_URL + "/" + dto.getId());
     }
 }

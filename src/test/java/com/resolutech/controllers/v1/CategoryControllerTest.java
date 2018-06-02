@@ -1,4 +1,4 @@
-package com.resolutech.controllers;
+package com.resolutech.controllers.v1;
 
 import com.resolutech.api.v1.model.CategoryDTO;
 import com.resolutech.controllers.v1.CategoryController;

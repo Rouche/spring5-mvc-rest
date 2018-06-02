@@ -15,6 +15,7 @@ import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 public class CustomerServiceTest {
@@ -59,6 +60,23 @@ public class CustomerServiceTest {
 
         //When
         CustomerDTO dto = customerService.getById(ID.toString());
+
+        //Then
+        assertNotNull(dto);
+        assertEquals(ID, dto.getId());
+    }
+
+    @Test
+    public void createCustomer() {
+        //Given
+        CustomerDTO customerDTO = CustomerDTO.builder().firstname(NAME).build();
+
+        Customer savedCustomer = Customer.builder().id(ID).firstname(customerDTO.getFirstname()).build();
+
+        when(customerRepository.save(any(Customer.class))).thenReturn(savedCustomer);
+
+        //When
+        CustomerDTO dto = customerService.createCustomer(customerDTO);
 
         //Then
         assertNotNull(dto);

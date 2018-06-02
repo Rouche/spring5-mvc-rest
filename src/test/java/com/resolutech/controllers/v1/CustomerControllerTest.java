@@ -1,4 +1,4 @@
-package com.resolutech.controllers;
+package com.resolutech.controllers.v1;
 
 import com.resolutech.api.v1.model.CategoryDTO;
 import com.resolutech.api.v1.model.CustomerDTO;
@@ -22,12 +22,15 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class CustomerControllerTest {
+public class CustomerControllerTest extends AbstractRestControllerTest {
 
     public static final String NAME = "Joe";
+    public static final long LONG_ID = 2L;
 
     @Mock
     CustomerService customerService;
@@ -75,6 +78,24 @@ public class CustomerControllerTest {
         mockMvc.perform(get("/api/v1/customers/12")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.firstname", equalTo(NAME)));
+    }
+
+    @Test
+    public void createCustomer() throws Exception {
+        //Given
+        CustomerDTO customer = CustomerDTO.builder().firstname(NAME).build();
+
+        CustomerDTO returnCustomer = CustomerDTO.builder().firstname(customer.getFirstname()).id(LONG_ID).build();
+        customer.setFirstname(NAME);
+
+        when(customerService.createCustomer(customer)).thenReturn(returnCustomer);
+
+        mockMvc.perform(post("/api/v1/customers/")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(asJsonString(customer)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.customer_url", equalTo("/api/v1/customers/" + LONG_ID)))
                 .andExpect(jsonPath("$.firstname", equalTo(NAME)));
     }
 }
