@@ -50,13 +50,11 @@ public class CustomerControllerTest extends AbstractRestControllerTest {
 
     @Test
     public void getAll() throws Exception {
-        CustomerDTO customer1 = new CustomerDTO();
+        CustomerDTO customer1 = CustomerDTO.builder().firstname(NAME).build();
         customer1.setId(1l);
-        customer1.setFirstname(NAME);
 
-        CustomerDTO customer2 = new CustomerDTO();
+        CustomerDTO customer2 = CustomerDTO.builder().firstname("Bob").build();
         customer2.setId(2l);
-        customer2.setFirstname("Bob");
 
         List<CustomerDTO> customers = Arrays.asList(customer1, customer2);
 
@@ -69,9 +67,8 @@ public class CustomerControllerTest extends AbstractRestControllerTest {
 
     @Test
     public void getById() throws Exception {
-        CustomerDTO customer1 = new CustomerDTO();
+        CustomerDTO customer1 = CustomerDTO.builder().firstname(NAME).build();
         customer1.setId(12L);
-        customer1.setFirstname(NAME);
 
         when(customerService.getById("12")).thenReturn(customer1);
 
@@ -87,7 +84,6 @@ public class CustomerControllerTest extends AbstractRestControllerTest {
         CustomerDTO customer = CustomerDTO.builder().firstname(NAME).build();
 
         CustomerDTO returnCustomer = CustomerDTO.builder().firstname(customer.getFirstname()).id(LONG_ID).build();
-        customer.setFirstname(NAME);
 
         when(customerService.createCustomer(customer)).thenReturn(returnCustomer);
 
@@ -95,6 +91,23 @@ public class CustomerControllerTest extends AbstractRestControllerTest {
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(asJsonString(customer)))
                 .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.customer_url", equalTo("/api/v1/customers/" + LONG_ID)))
+                .andExpect(jsonPath("$.firstname", equalTo(NAME)));
+    }
+
+    @Test
+    public void saveCustomer() throws Exception {
+        //Given
+        CustomerDTO customer = CustomerDTO.builder().firstname(NAME).build();
+
+        CustomerDTO returnCustomer = CustomerDTO.builder().firstname(customer.getFirstname()).id(LONG_ID).build();
+
+        when(customerService.saveCustomerById(LONG_ID, customer)).thenReturn(returnCustomer);
+
+        mockMvc.perform(put("/api/v1/customers/" + LONG_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(customer)))
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.customer_url", equalTo("/api/v1/customers/" + LONG_ID)))
                 .andExpect(jsonPath("$.firstname", equalTo(NAME)));
     }

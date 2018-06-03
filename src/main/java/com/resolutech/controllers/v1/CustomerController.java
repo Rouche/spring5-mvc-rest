@@ -43,6 +43,13 @@ public class CustomerController {
         return new ResponseEntity(dto, HttpStatus.CREATED);
     }
 
+    @PutMapping("{id}")
+    public ResponseEntity<CustomerDTO> updateCustomer(@PathVariable("id") String id, @RequestBody CustomerDTO customerDTO) {
+        CustomerDTO dto = customerService.saveCustomerById(Long.valueOf(id), customerDTO);
+        setCustomerUrl(dto);
+        return new ResponseEntity(dto, HttpStatus.OK);
+    }
+
     private void setCustomerUrl(CustomerDTO dto) {
         dto.setCustomerUrl(CUSTOMER_ROOT_URL + "/" + dto.getId());
     }

@@ -82,4 +82,21 @@ public class CustomerServiceTest {
         assertNotNull(dto);
         assertEquals(ID, dto.getId());
     }
+
+    @Test
+    public void saveCustomerById() {
+        //Given
+        CustomerDTO customerDTO = CustomerDTO.builder().firstname(NAME).build();
+
+        Customer savedCustomer = Customer.builder().id(ID).firstname(customerDTO.getFirstname()).build();
+
+        when(customerRepository.save(any(Customer.class))).thenReturn(savedCustomer);
+
+        //When
+        CustomerDTO dto = customerService.saveCustomerById(ID, customerDTO);
+
+        //Then
+        assertNotNull(dto);
+        assertEquals(ID, dto.getId());
+    }
 }
