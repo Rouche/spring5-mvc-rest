@@ -4,6 +4,7 @@ import com.resolutech.api.v1.mapper.CustomerMapper;
 import com.resolutech.api.v1.model.CustomerDTO;
 import com.resolutech.domain.Customer;
 import com.resolutech.repositories.CustomerRepository;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -61,6 +62,21 @@ public class CustomerServiceImpl implements CustomerService {
         return saveAndReturnDTO(customer);
     }
 
+    @Override
+    public CustomerDTO patchCustomerById(Long id, CustomerDTO customerDTO) {
+
+        return customerRepository.findById(id).map( customer -> {
+            if(StringUtils.isNotBlank(customerDTO.getFirstname())) {
+                customer.setFirstname(customerDTO.getFirstname());
+            }
+            if(StringUtils.isNotBlank(customerDTO.getLastname())) {
+                customer.setLastname(customerDTO.getLastname());
+            }
+
+            return saveAndReturnDTO(customer);
+        }).orElseThrow(RuntimeException::new);
+    }
+
     private CustomerDTO saveAndReturnDTO(Customer customer) {
         customer = customerRepository.save(customer);
 
@@ -68,4 +84,5 @@ public class CustomerServiceImpl implements CustomerService {
 
         return customerDTO;
     }
+
 }
