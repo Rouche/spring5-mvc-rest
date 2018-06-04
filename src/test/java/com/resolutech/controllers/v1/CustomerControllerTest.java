@@ -1,10 +1,6 @@
 package com.resolutech.controllers.v1;
 
-import com.resolutech.api.v1.model.CategoryDTO;
 import com.resolutech.api.v1.model.CustomerDTO;
-import com.resolutech.controllers.v1.CategoryController;
-import com.resolutech.controllers.v1.CustomerController;
-import com.resolutech.services.CategoryService;
 import com.resolutech.services.CustomerService;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,10 +16,9 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -70,7 +65,7 @@ public class CustomerControllerTest extends AbstractRestControllerTest {
         CustomerDTO customer1 = CustomerDTO.builder().firstname(NAME).build();
         customer1.setId(12L);
 
-        when(customerService.getById("12")).thenReturn(customer1);
+        when(customerService.getCustomerById("12")).thenReturn(customer1);
 
         mockMvc.perform(get("/api/v1/customers/12")
                 .contentType(MediaType.APPLICATION_JSON))
@@ -79,7 +74,7 @@ public class CustomerControllerTest extends AbstractRestControllerTest {
     }
 
     @Test
-    public void createCustomer() throws Exception {
+    public void testCreateCustomer() throws Exception {
         //Given
         CustomerDTO customer = CustomerDTO.builder().firstname(NAME).build();
 
@@ -96,7 +91,7 @@ public class CustomerControllerTest extends AbstractRestControllerTest {
     }
 
     @Test
-    public void saveCustomer() throws Exception {
+    public void testUpdateCustomer() throws Exception {
         //Given
         CustomerDTO customer = CustomerDTO.builder().firstname(NAME).build();
 
@@ -110,5 +105,33 @@ public class CustomerControllerTest extends AbstractRestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.customer_url", equalTo("/api/v1/customers/" + LONG_ID)))
                 .andExpect(jsonPath("$.firstname", equalTo(NAME)));
+    }
+
+    @Test
+    public void testPatchCustomer() throws Exception {
+        //Given
+        String FIRSTNAME = "Mamaaaaannnnn";
+        CustomerDTO customer = CustomerDTO.builder().firstname(FIRSTNAME).build();
+
+        CustomerDTO returnCustomer = CustomerDTO.builder().firstname(customer.getFirstname()).id(LONG_ID).build();
+
+        when(customerService.patchCustomerById(LONG_ID, customer)).thenReturn(returnCustomer);
+
+        mockMvc.perform(patch("/api/v1/customers/" + LONG_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(customer)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.customer_url", equalTo("/api/v1/customers/" + LONG_ID)))
+                .andExpect(jsonPath("$.firstname", equalTo(FIRSTNAME)));
+    }
+
+    @Test
+    public void testDeleteCustomer() throws Exception {
+        //Given
+        mockMvc.perform(delete("/api/v1/customers/" + LONG_ID)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        verify(customerService).deleteCustomerById(LONG_ID);
     }
 }

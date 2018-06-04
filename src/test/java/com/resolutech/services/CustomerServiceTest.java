@@ -16,6 +16,8 @@ import java.util.Optional;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class CustomerServiceTest {
@@ -59,7 +61,7 @@ public class CustomerServiceTest {
         when(customerRepository.findById(ID)).thenReturn(Optional.of(customer));
 
         //When
-        CustomerDTO dto = customerService.getById(ID.toString());
+        CustomerDTO dto = customerService.getCustomerById(ID.toString());
 
         //Then
         assertNotNull(dto);
@@ -67,7 +69,7 @@ public class CustomerServiceTest {
     }
 
     @Test
-    public void createCustomer() {
+    public void testCreateCustomer() {
         //Given
         CustomerDTO customerDTO = CustomerDTO.builder().firstname(NAME).build();
 
@@ -84,7 +86,7 @@ public class CustomerServiceTest {
     }
 
     @Test
-    public void saveCustomerById() {
+    public void testSaveCustomerById() {
         //Given
         CustomerDTO customerDTO = CustomerDTO.builder().firstname(NAME).build();
 
@@ -98,5 +100,16 @@ public class CustomerServiceTest {
         //Then
         assertNotNull(dto);
         assertEquals(ID, dto.getId());
+    }
+
+    @Test
+    public void deleteCustomerById() {
+        //Given
+
+        //When
+        customerService.deleteCustomerById(ID);
+
+        //Then
+        verify(customerRepository, times(1)).deleteById(ID);
     }
 }

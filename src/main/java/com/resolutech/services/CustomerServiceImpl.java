@@ -34,7 +34,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public CustomerDTO getById(String id) {
+    public CustomerDTO getCustomerById(String id) {
 
         Optional<Customer> customerOptional = customerRepository.findById(Long.valueOf(id));
 
@@ -75,6 +75,11 @@ public class CustomerServiceImpl implements CustomerService {
 
             return saveAndReturnDTO(customer);
         }).orElseThrow(RuntimeException::new);
+    }
+
+    @Override
+    public void deleteCustomerById(Long id) {
+        customerRepository.deleteById(id);
     }
 
     private CustomerDTO saveAndReturnDTO(Customer customer) {

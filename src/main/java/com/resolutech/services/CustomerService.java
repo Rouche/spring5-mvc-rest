@@ -14,11 +14,13 @@ public interface CustomerService {
 
     List<CustomerDTO> getAll();
 
-    CustomerDTO getById(String id);
+    CustomerDTO getCustomerById(String id);
 
     CustomerDTO createCustomer(CustomerDTO customerDTO);
 
     CustomerDTO saveCustomerById(Long id, CustomerDTO customerDTO);
 
     CustomerDTO patchCustomerById(Long id, CustomerDTO customerDTO);
+
+    void deleteCustomerById(Long id);
 }

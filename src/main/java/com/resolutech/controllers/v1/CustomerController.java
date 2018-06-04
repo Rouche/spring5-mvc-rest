@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.xml.ws.Response;
 import java.util.List;
 
 @Controller
@@ -31,7 +32,7 @@ public class CustomerController {
 
     @GetMapping("{id}")
     public ResponseEntity<CustomerDTO> getById(@PathVariable("id") String id) {
-        CustomerDTO dto = customerService.getById(id);
+        CustomerDTO dto = customerService.getCustomerById(id);
         setCustomerUrl(dto);
         return new ResponseEntity(dto, HttpStatus.OK);
     }
@@ -48,6 +49,20 @@ public class CustomerController {
         CustomerDTO dto = customerService.saveCustomerById(Long.valueOf(id), customerDTO);
         setCustomerUrl(dto);
         return new ResponseEntity(dto, HttpStatus.OK);
+    }
+
+    @PatchMapping("{id}")
+    public ResponseEntity<CustomerDTO> patchCustomer(@PathVariable("id") String id, @RequestBody CustomerDTO customerDTO) {
+        CustomerDTO dto = customerService.patchCustomerById(Long.valueOf(id), customerDTO);
+        setCustomerUrl(dto);
+        return new ResponseEntity(dto, HttpStatus.OK);
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> deleteCustomer(@PathVariable("id") String id) {
+        customerService.deleteCustomerById(Long.valueOf(id));
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     private void setCustomerUrl(CustomerDTO dto) {
