@@ -3,6 +3,7 @@ package com.resolutech.controllers.v1;
 import com.resolutech.api.v1.model.CustomerDTO;
 import com.resolutech.api.v1.model.CustomerListDTO;
 import com.resolutech.services.CustomerService;
+import com.resolutech.services.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -12,10 +13,13 @@ import javax.xml.ws.Response;
 import java.util.List;
 
 @Controller
-@RequestMapping(CustomerController.CUSTOMER_ROOT_URL)
+@RequestMapping(CustomerController.BASE_URL)
 public class CustomerController {
 
-    static final String CUSTOMER_ROOT_URL = "/api/v1/customers";
+    // @Important try to use constants so they can be reused.
+    // not ending with / allow requests to be done wioth / or not
+    // Mappings dont need starting /, its done automatically.
+    protected static final String BASE_URL = "/api/v1/customers";
 
     private final CustomerService customerService;
 
@@ -32,7 +36,7 @@ public class CustomerController {
 
     @GetMapping("{id}")
     public ResponseEntity<CustomerDTO> getById(@PathVariable("id") String id) {
-        CustomerDTO dto = customerService.getCustomerById(id);
+        CustomerDTO dto = customerService.getCustomerById(Long.valueOf(id));
         setCustomerUrl(dto);
         return new ResponseEntity(dto, HttpStatus.OK);
     }
@@ -66,6 +70,6 @@ public class CustomerController {
     }
 
     private void setCustomerUrl(CustomerDTO dto) {
-        dto.setCustomerUrl(CUSTOMER_ROOT_URL + "/" + dto.getId());
+        dto.setCustomerUrl(BASE_URL + "/" + dto.getId());
     }
 }

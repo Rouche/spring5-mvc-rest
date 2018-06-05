@@ -61,7 +61,7 @@ public class CustomerServiceTest {
         when(customerRepository.findById(ID)).thenReturn(Optional.of(customer));
 
         //When
-        CustomerDTO dto = customerService.getCustomerById(ID.toString());
+        CustomerDTO dto = customerService.getCustomerById(ID);
 
         //Then
         assertNotNull(dto);

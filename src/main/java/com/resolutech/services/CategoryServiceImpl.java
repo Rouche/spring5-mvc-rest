@@ -2,6 +2,7 @@ package com.resolutech.services;
 
 import com.resolutech.api.v1.mapper.CategoryMapper;
 import com.resolutech.api.v1.model.CategoryDTO;
+import com.resolutech.domain.Category;
 import com.resolutech.repositories.CategoryRepository;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +30,10 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryDTO getByName(String name) {
-        return categoryMapper.categoryToCategoryDTO(categoryRepository.findByName(name));
+        Category category = categoryRepository.findByName(name);
+        if(category == null) {
+            throw new ResourceNotFoundException();
+        }
+        return categoryMapper.categoryToCategoryDTO(category);
     }
 }

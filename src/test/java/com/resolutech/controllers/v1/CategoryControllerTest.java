@@ -1,8 +1,10 @@
 package com.resolutech.controllers.v1;
 
 import com.resolutech.api.v1.model.CategoryDTO;
+import com.resolutech.controllers.RestResponseEntityExceptionHandler;
 import com.resolutech.controllers.v1.CategoryController;
 import com.resolutech.services.CategoryService;
+import com.resolutech.services.ResourceNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -38,11 +40,12 @@ public class CategoryControllerTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        mockMvc = MockMvcBuilders.standaloneSetup(categoryController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(categoryController)
+                .setControllerAdvice(new RestResponseEntityExceptionHandler()).build();
     }
 
     @Test
-    public void getAll() throws Exception {
+    public void testGetAll() throws Exception {
         CategoryDTO category1 = new CategoryDTO();
         category1.setId(1l);
         category1.setName("Joe");
@@ -61,7 +64,7 @@ public class CategoryControllerTest {
                 .andExpect(jsonPath("$.categories", hasSize(2)));    }
 
     @Test
-    public void getByName() throws Exception {
+    public void testGetByName() throws Exception {
         CategoryDTO category1 = new CategoryDTO();
         category1.setId(1l);
         category1.setName(NAME);
@@ -72,5 +75,14 @@ public class CategoryControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name", equalTo(NAME)));
+    }
+
+    @Test
+    public void testByNameNotFound() throws Exception {
+        when(categoryService.getByName(NAME)).thenThrow(new ResourceNotFoundException());
+
+        mockMvc.perform(get("/api/v1/categories/" + NAME)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 }

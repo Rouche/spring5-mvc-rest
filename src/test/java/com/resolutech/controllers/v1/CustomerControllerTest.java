@@ -1,7 +1,9 @@
 package com.resolutech.controllers.v1;
 
 import com.resolutech.api.v1.model.CustomerDTO;
+import com.resolutech.controllers.RestResponseEntityExceptionHandler;
 import com.resolutech.services.CustomerService;
+import com.resolutech.services.ResourceNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -40,7 +42,8 @@ public class CustomerControllerTest extends AbstractRestControllerTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
 
-        mockMvc = MockMvcBuilders.standaloneSetup(customerController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(customerController)
+                .setControllerAdvice(new RestResponseEntityExceptionHandler()).build();
     }
 
     @Test
@@ -65,9 +68,9 @@ public class CustomerControllerTest extends AbstractRestControllerTest {
         CustomerDTO customer1 = CustomerDTO.builder().firstname(NAME).build();
         customer1.setId(12L);
 
-        when(customerService.getCustomerById("12")).thenReturn(customer1);
+        when(customerService.getCustomerById(LONG_ID)).thenReturn(customer1);
 
-        mockMvc.perform(get("/api/v1/customers/12")
+        mockMvc.perform(get("/api/v1/customers/" + LONG_ID)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.firstname", equalTo(NAME)));
@@ -133,5 +136,15 @@ public class CustomerControllerTest extends AbstractRestControllerTest {
                 .andExpect(status().isOk());
 
         verify(customerService).deleteCustomerById(LONG_ID);
+    }
+
+
+    @Test
+    public void testByIdNotFound() throws Exception {
+        when(customerService.getCustomerById(LONG_ID)).thenThrow(new ResourceNotFoundException());
+
+        mockMvc.perform(get("/api/v1/customers/" + LONG_ID)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 }
