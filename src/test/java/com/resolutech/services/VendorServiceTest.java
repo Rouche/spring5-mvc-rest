@@ -13,9 +13,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
 
 public class VendorServiceTest {
@@ -56,14 +61,16 @@ public class VendorServiceTest {
         //Given
         Vendor vendor = Vendor.builder().id(ID).name(NAME).build();
 
-        when(vendorRepository.findById(ID)).thenReturn(Optional.of(vendor));
+        // @Important Mockito BDD syntax
+        given(vendorRepository.findById(ID)).willReturn(Optional.of(vendor));
 
         //When
         VendorDTO dto = vendorService.getVendorById(ID);
 
         //Then
-        assertNotNull(dto);
-        assertEquals(NAME, dto.getName());
+        then(vendorRepository).should(times(1)).findById(ID);
+        //junit assert that with matchers
+        assertThat(dto.getName(), is(equalTo(NAME)));
     }
 
     @Test

@@ -32,7 +32,7 @@ public class CustomerControllerTest extends AbstractRestControllerTest {
     @Mock
     CustomerService customerService;
 
-    // @Important InjectMocks will inject mocks automatically
+    // @Important InjectMocks will inject mocks automatically inside customerController (the customerService)
     @InjectMocks
     CustomerController customerController;
 

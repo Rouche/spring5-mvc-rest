@@ -6,10 +6,15 @@ import com.resolutech.services.VendorService;
 import com.resolutech.services.ResourceNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -24,36 +29,39 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+// @Important different way to test with MockBean when @WenMvcTest is used
+@RunWith(SpringRunner.class)
+@WebMvcTest(controllers = {VendorController.class})
 public class VendorControllerTest extends AbstractRestControllerTest {
 
     public static final String NAME = "Joe";
     public static final long LONG_ID = 2L;
 
-    @Mock
-    VendorService vendorService;
+    @MockBean
+    VendorService vendorService; // provided by spring context
 
-    // @Important InjectMocks will inject mocks automatically
-    @InjectMocks
-    VendorController vendorController;
+    @Autowired
+    MockMvc mockMvc; // provided by spring context
 
-    MockMvc mockMvc;
+    private VendorDTO vendor1;
+    private VendorDTO vendor2;
 
     @Before
     public void setUp() throws Exception {
-        MockitoAnnotations.initMocks(this);
+        //MockitoAnnotations.initMocks(this); no need with MockBean
 
-        mockMvc = MockMvcBuilders.standaloneSetup(vendorController)
-                .setControllerAdvice(new RestResponseEntityExceptionHandler()).build();
+        vendor1 = VendorDTO.builder().name(NAME).build();
+        vendor1.setId(1l);
+
+        vendor2 = VendorDTO.builder().name("Bob").build();
+        vendor2.setId(2l);
+
+        //mockMvc = MockMvcBuilders.standaloneSetup(vendorController)
+        //      .setControllerAdvice(new RestResponseEntityExceptionHandler()).build();
     }
 
     @Test
     public void getAll() throws Exception {
-        VendorDTO vendor1 = VendorDTO.builder().name(NAME).build();
-        vendor1.setId(1l);
-
-        VendorDTO vendor2 = VendorDTO.builder().name("Bob").build();
-        vendor2.setId(2l);
-
         List<VendorDTO> vendors = Arrays.asList(vendor1, vendor2);
 
         when(vendorService.getAll()).thenReturn(vendors);
@@ -65,9 +73,6 @@ public class VendorControllerTest extends AbstractRestControllerTest {
 
     @Test
     public void getById() throws Exception {
-        VendorDTO vendor1 = VendorDTO.builder().name(NAME).build();
-        vendor1.setId(12L);
-
         when(vendorService.getVendorById(LONG_ID)).thenReturn(vendor1);
 
         mockMvc.perform(get("/api/v1/vendors/" + LONG_ID)
@@ -78,16 +83,14 @@ public class VendorControllerTest extends AbstractRestControllerTest {
 
     @Test
     public void testCreateVendor() throws Exception {
-        //Given
-        VendorDTO vendor = VendorDTO.builder().name(NAME).build();
 
-        VendorDTO returnVendor = VendorDTO.builder().name(vendor.getName()).id(LONG_ID).build();
+        VendorDTO returnVendor = VendorDTO.builder().name(vendor1.getName()).id(LONG_ID).build();
 
-        when(vendorService.createVendor(vendor)).thenReturn(returnVendor);
+        when(vendorService.createVendor(vendor1)).thenReturn(returnVendor);
 
         mockMvc.perform(post("/api/v1/vendors/")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(asJsonString(vendor)))
+                    .content(asJsonString(vendor1)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.vendor_url", equalTo("/api/v1/vendors/" + LONG_ID)))
                 .andExpect(jsonPath("$.name", equalTo(NAME)));
@@ -95,16 +98,14 @@ public class VendorControllerTest extends AbstractRestControllerTest {
 
     @Test
     public void testUpdateVendor() throws Exception {
-        //Given
-        VendorDTO vendor = VendorDTO.builder().name(NAME).build();
 
-        VendorDTO returnVendor = VendorDTO.builder().name(vendor.getName()).id(LONG_ID).build();
+        VendorDTO returnVendor = VendorDTO.builder().name(vendor1.getName()).id(LONG_ID).build();
 
-        when(vendorService.saveVendorById(LONG_ID, vendor)).thenReturn(returnVendor);
+        when(vendorService.saveVendorById(LONG_ID, vendor1)).thenReturn(returnVendor);
 
         mockMvc.perform(put("/api/v1/vendors/" + LONG_ID)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(vendor)))
+                .content(asJsonString(vendor1)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.vendor_url", equalTo("/api/v1/vendors/" + LONG_ID)))
                 .andExpect(jsonPath("$.name", equalTo(NAME)));
@@ -113,19 +114,19 @@ public class VendorControllerTest extends AbstractRestControllerTest {
     @Test
     public void testPatchVendor() throws Exception {
         //Given
-        String FIRSTNAME = "Mamaaaaannnnn";
-        VendorDTO vendor = VendorDTO.builder().name(FIRSTNAME).build();
+        String NAME = "Mamaaaaannnnn";
 
-        VendorDTO returnVendor = VendorDTO.builder().name(vendor.getName()).id(LONG_ID).build();
+        VendorDTO vendorPatch = VendorDTO.builder().name(NAME).id(LONG_ID).build();
+        VendorDTO returnVendor = VendorDTO.builder().name(vendorPatch.getName()).id(LONG_ID).build();
 
-        when(vendorService.patchVendorById(LONG_ID, vendor)).thenReturn(returnVendor);
+        when(vendorService.patchVendorById(LONG_ID, vendorPatch)).thenReturn(returnVendor);
 
         mockMvc.perform(patch("/api/v1/vendors/" + LONG_ID)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(vendor)))
+                .content(asJsonString(vendorPatch)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.vendor_url", equalTo("/api/v1/vendors/" + LONG_ID)))
-                .andExpect(jsonPath("$.name", equalTo(FIRSTNAME)));
+                .andExpect(jsonPath("$.name", equalTo(NAME)));
     }
 
     @Test
