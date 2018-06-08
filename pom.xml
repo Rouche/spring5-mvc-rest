@@ -69,6 +69,8 @@
 			<version>${lombok.version}</version>
 			<optional>true</optional>
 		</dependency>
+
+		<!-- @Important Swagger REST automatic documentation -->
 		<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger2</artifactId>

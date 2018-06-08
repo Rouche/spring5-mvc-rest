@@ -1,6 +1,8 @@
 package com.resolutech.api.v1.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiOperation;
 import lombok.*;
 
 /**
@@ -14,6 +16,7 @@ public class VendorDTO {
 
     private Long id;
     private String name;
+    @ApiModelProperty(value = "This url can be used to perform operations on single vendor")
     @JsonProperty("vendor_url")
     private String vendorUrl;
 }
