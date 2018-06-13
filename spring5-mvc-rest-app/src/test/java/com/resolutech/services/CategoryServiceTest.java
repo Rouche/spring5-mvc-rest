@@ -4,6 +4,8 @@ import com.resolutech.api.v1.mapper.CategoryMapper;
 import com.resolutech.api.v1.model.CategoryDTO;
 import com.resolutech.domain.Category;
 import com.resolutech.repositories.CategoryRepository;
+import com.resolutech.services.CategoryService;
+import com.resolutech.services.CategoryServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;

@@ -4,6 +4,8 @@ import com.resolutech.api.v1.mapper.VendorMapper;
 import com.resolutech.api.v1.model.VendorDTO;
 import com.resolutech.domain.Vendor;
 import com.resolutech.repositories.VendorRepository;
+import com.resolutech.services.VendorService;
+import com.resolutech.services.VendorServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;

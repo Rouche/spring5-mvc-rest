@@ -1,8 +1,6 @@
 package com.resolutech.bootstrap;
 
-import com.resolutech.domain.Category;
 import com.resolutech.domain.Customer;
-import com.resolutech.repositories.CategoryRepository;
 import com.resolutech.repositories.CustomerRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
