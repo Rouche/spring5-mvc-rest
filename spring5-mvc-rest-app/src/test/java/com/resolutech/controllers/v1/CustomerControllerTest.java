@@ -59,7 +59,8 @@ public class CustomerControllerTest extends AbstractRestControllerTest {
         when(customerService.getAll()).thenReturn(customers);
 
         mockMvc.perform(get("/api/v1/customers/")
-                .contentType(MediaType.APPLICATION_JSON))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.customers", hasSize(2)));    }
 
@@ -71,7 +72,8 @@ public class CustomerControllerTest extends AbstractRestControllerTest {
         when(customerService.getCustomerById(LONG_ID)).thenReturn(customer1);
 
         mockMvc.perform(get("/api/v1/customers/" + LONG_ID)
-                .contentType(MediaType.APPLICATION_JSON))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.firstname", equalTo(NAME)));
     }
@@ -86,6 +88,7 @@ public class CustomerControllerTest extends AbstractRestControllerTest {
         when(customerService.createCustomer(customer)).thenReturn(returnCustomer);
 
         mockMvc.perform(post("/api/v1/customers/")
+                    .accept(MediaType.APPLICATION_JSON)
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(asJsonString(customer)))
                 .andExpect(status().isCreated())
@@ -103,6 +106,7 @@ public class CustomerControllerTest extends AbstractRestControllerTest {
         when(customerService.saveCustomerById(LONG_ID, customer)).thenReturn(returnCustomer);
 
         mockMvc.perform(put("/api/v1/customers/" + LONG_ID)
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(customer)))
                 .andExpect(status().isOk())
@@ -121,6 +125,7 @@ public class CustomerControllerTest extends AbstractRestControllerTest {
         when(customerService.patchCustomerById(LONG_ID, customer)).thenReturn(returnCustomer);
 
         mockMvc.perform(patch("/api/v1/customers/" + LONG_ID)
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(customer)))
                 .andExpect(status().isOk())
