@@ -1,7 +1,7 @@
 package com.resolutech.api.v1.mapper;
 
-import com.resolutech.api.v1.model.VendorDTO;
 import com.resolutech.domain.Vendor;
+import com.resolutech.model.VendorDTO;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

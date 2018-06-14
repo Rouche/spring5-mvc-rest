@@ -1,11 +1,10 @@
 package com.resolutech.services;
 
 import com.resolutech.api.v1.mapper.VendorMapper;
-import com.resolutech.api.v1.model.VendorDTO;
 import com.resolutech.domain.Vendor;
+import com.resolutech.model.ObjectFactory;
+import com.resolutech.model.VendorDTO;
 import com.resolutech.repositories.VendorRepository;
-import com.resolutech.services.VendorService;
-import com.resolutech.services.VendorServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -17,9 +16,7 @@ import java.util.Optional;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -35,9 +32,13 @@ public class VendorServiceTest {
 
     VendorService vendorService;
 
+    ObjectFactory factory;
+
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
+
+        factory = new ObjectFactory();
 
         vendorService = new VendorServiceImpl(VendorMapper.INSTANCE, vendorRepository);
     }
@@ -78,7 +79,8 @@ public class VendorServiceTest {
     @Test
     public void testCreateVendor() {
         //Given
-        VendorDTO vendorDTO = VendorDTO.builder().name(NAME).build();
+        VendorDTO vendorDTO = factory.createVendorDTO();
+        vendorDTO.setName(NAME);
 
         Vendor savedVendor = Vendor.builder().id(ID).name(vendorDTO.getName()).build();
 
@@ -95,7 +97,8 @@ public class VendorServiceTest {
     @Test
     public void testSaveVendorById() {
         //Given
-        VendorDTO vendorDTO = VendorDTO.builder().name(NAME).build();
+        VendorDTO vendorDTO = factory.createVendorDTO();
+        vendorDTO.setName(NAME);
 
         Vendor savedVendor = Vendor.builder().id(ID).name(vendorDTO.getName()).build();
 

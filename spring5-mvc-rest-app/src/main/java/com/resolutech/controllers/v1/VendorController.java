@@ -1,7 +1,9 @@
 package com.resolutech.controllers.v1;
 
-import com.resolutech.api.v1.model.VendorDTO;
-import com.resolutech.api.v1.model.VendorListDTO;
+//import com.resolutech.api.v1.model.VendorDTO;
+//import com.resolutech.api.v1.model.VendorListDTO;
+import com.resolutech.model.VendorDTO;
+import com.resolutech.model.VendorListDTO;
 import com.resolutech.services.VendorService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -31,8 +33,12 @@ public class VendorController {
     @ResponseStatus(HttpStatus.OK)
     public VendorListDTO getAll() {
         List<VendorDTO> list = vendorService.getAll();
-        list.forEach(this::setVendorUrl);
-        return new VendorListDTO(list);
+        VendorListDTO returnList = new VendorListDTO();
+        list.forEach(vendor -> {
+            this.setVendorUrl(vendor);
+            returnList.getVendors().add(vendor);
+        });
+        return returnList;
     }
 
     @ApiOperation(value = "This will get a vendor by id", notes = "404 if not found")

@@ -18,6 +18,13 @@
     <description>Demo project for Spring Boot</description>
 
 	<dependencies>
+		<!-- @Important submodule dependency -->
+		<dependency>
+			<groupId>com.resolutech</groupId>
+			<artifactId>rest-model</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>

@@ -1,8 +1,8 @@
 package com.resolutech.services;
 
 import com.resolutech.api.v1.mapper.VendorMapper;
-import com.resolutech.api.v1.model.VendorDTO;
 import com.resolutech.domain.Vendor;
+import com.resolutech.model.VendorDTO;
 import com.resolutech.repositories.VendorRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,7 @@ public class VendorServiceImpl implements VendorService {
     }
 
     @Override
-    public List<VendorDTO> getAll() {
+    public List<com.resolutech.model.VendorDTO> getAll() {
         return vendorRepository.findAll()
                 .stream()
                 .map(vendorMapper::vendorToVendorDTO)
@@ -30,7 +30,7 @@ public class VendorServiceImpl implements VendorService {
     }
 
     @Override
-    public VendorDTO getVendorById(Long id) {
+    public com.resolutech.model.VendorDTO getVendorById(Long id) {
         return vendorRepository.findById(id)
                 .map(vendorMapper::vendorToVendorDTO)
                 .orElseThrow(ResourceNotFoundException::new);
@@ -58,8 +58,8 @@ public class VendorServiceImpl implements VendorService {
         return vendorRepository.findById(id)
                 .map(vendor -> {
 
-                    if(StringUtils.isNotBlank(vendorDTO.getName())) {
-                        vendor.setName(vendorDTO.getName());
+                    if(StringUtils.isNotBlank(vendor.getName())) {
+                        vendor.setName(vendor.getName());
                     }
 
                     return saveAndReturnDTO(vendor);
