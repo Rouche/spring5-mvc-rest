@@ -110,8 +110,8 @@ public class VendorControllerTest extends AbstractRestControllerTest {
         when(vendorService.saveVendorById(anyLong(), any(VendorDTO.class))).thenReturn(returnVendor);
 
         mockMvc.perform(put("/api/v1/vendors/" + LONG_ID)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(vendor1)))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(asJsonString(vendor1)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.vendorUrl", equalTo("/api/v1/vendors/" + LONG_ID)))
                 .andExpect(jsonPath("$.name", equalTo(NAME)));
@@ -130,11 +130,12 @@ public class VendorControllerTest extends AbstractRestControllerTest {
         returnVendor.setName(vendorPatch.getName());
         returnVendor.setId(LONG_ID);
 
+        // @Important Mockito matcher with JAXB class seems to not be working. NEed to use any(...)
         when(vendorService.patchVendorById(anyLong(), any(VendorDTO.class))).thenReturn(returnVendor);
 
         mockMvc.perform(patch("/api/v1/vendors/" + LONG_ID)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString(vendorPatch)))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(asJsonString(vendorPatch)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.vendorUrl", equalTo("/api/v1/vendors/" + LONG_ID)))
                 .andExpect(jsonPath("$.name", equalTo(NAME)));
@@ -156,7 +157,7 @@ public class VendorControllerTest extends AbstractRestControllerTest {
         when(vendorService.getVendorById(LONG_ID)).thenThrow(new ResourceNotFoundException());
 
         mockMvc.perform(get("/api/v1/vendors/" + LONG_ID)
-                .contentType(MediaType.APPLICATION_JSON))
+                    .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
 }
